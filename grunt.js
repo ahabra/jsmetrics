@@ -2,7 +2,10 @@
 
 module.exports = function(grunt) {
   var gruntSupport = GruntSupport(grunt);
-	
+
+	var sourceFiles= gruntSupport.getSourceFiles(['range', 'tree', 'fileMetrics', 'jsMetrics', 'metricsHtmlReport']);
+	var distSources = gruntSupport.getVendeorDependency().concat(sourceFiles);
+
 	// Project configuration.
 	grunt.initConfig({
 		lint : {
@@ -34,7 +37,7 @@ module.exports = function(grunt) {
 		},
 
 		jasmine : {
-			src : gruntSupport.getVendeorDependency().concat(['src/main/js/**/*.js']),
+			src : distSources,
 			specs : 'src/test/js/**/*_spec.js',
 			timeout : 5000,
 			junit : {
@@ -42,6 +45,13 @@ module.exports = function(grunt) {
 			},
 			phantomjs : {
 				'ignore-ssl-errors' : true
+			}
+		},
+
+		concat: {
+			dist: {
+				src: distSources,
+				dest: 'dist/js-metrics.all.js'
 			}
 		}
 
@@ -53,7 +63,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-jasmine-runner');
 
 	// Default task.
-	grunt.registerTask('default', 'lint jasmine');
+	grunt.registerTask('default', 'lint jasmine concat');
 
 };
 
@@ -70,14 +80,20 @@ function GruntSupport(grunt) {
 
 	function getVendeorDependency() {
 		var dep= ['jquery', 'underscore', 'tstring', 'namespace', 'esprima'];
-		for (var i=0; i<dep.length; i++) {
-			dep[i] = 'src/main/js/vendor/' + dep[i] + '.js';
-		}
-		return dep;
+		return dep.map(function(file) {
+			return 'src/main/js/vendor/' + file + '.js';
+		});
+	}
+
+	function getSourceFiles(files) {
+		return files.map(function(file) {
+			return 'src/main/js/' + file + '.js';
+		});
 	}
 	
 	return {
 		getLintFiles: getLintFiles,
-		getVendeorDependency: getVendeorDependency
+		getVendeorDependency: getVendeorDependency,
+		getSourceFiles: getSourceFiles
 	};
 }

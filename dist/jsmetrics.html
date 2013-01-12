@@ -2,18 +2,7 @@
 <html>
 <head>
 	<title>JS Metrics</title>
-	<script type="text/javascript" src="../main/js/vendor/jquery.js"></script>
-	<script type="text/javascript" src="../main/js/vendor/underscore.js"></script>
-	<script type="text/javascript" src="../main/js/vendor/tstring.js"></script>
-	<script type="text/javascript" src="../main/js/vendor/namespace.js"></script>
-	<script type="text/javascript" src="../main/js/vendor/esprima.js"></script>
-
-	<script type="text/javascript" src="../main/js/a.range.js"></script>
-	<script type="text/javascript" src="../main/js/a.tree.js"></script>
-	<script type="text/javascript" src="../main/js/b.fileMetrics.js"></script>
-	<script type="text/javascript" src="../main/js/jsMetrics.js"></script>
-	<script type="text/javascript" src="../main/js/metricsHtmlReport.js"></script>
-
+	<script type="text/javascript" src="js-metrics.all.js"></script>
 	<script>
 		function calculateMetrics() {
 			var fileNames= $('#fileNames').val().split('\n');
@@ -67,6 +56,8 @@
 		.comment {
 			display:inline-block;
 			font-style: italic;
+			font-size: small;
+			color: #006400;
 		}
 
 	</style>
@@ -79,6 +70,7 @@
 </div>
 
 <b>Enter list of file names to process</b>
+<span class="comment">Use Firefox or Safari. Chrome's default configuration does not work.</span>
 <div>
 	<textarea id="fileNames" cols="120" rows="12"></textarea>
 </div>
