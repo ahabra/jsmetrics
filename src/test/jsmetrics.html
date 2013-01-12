@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JS Metrics</title>
+	<script type="text/javascript" src="../main/js/vendor/jquery.js"></script>
+	<script type="text/javascript" src="../main/js/vendor/underscore.js"></script>
+	<script type="text/javascript" src="../main/js/vendor/tstring.js"></script>
+	<script type="text/javascript" src="../main/js/vendor/namespace.js"></script>
+	<script type="text/javascript" src="../main/js/vendor/esprima.js"></script>
+
+	<script type="text/javascript" src="../main/js/a.tree.js"></script>
+	<script type="text/javascript" src="../main/js/b.fileMetrics.js"></script>
+	<script type="text/javascript" src="../main/js/jsMetrics.js"></script>
+	<script type="text/javascript" src="../main/js/metricsHtmlReport.js"></script>
+
+	<script>
+		function calculateMetrics() {
+			var fileNames= $('#fileNames').val().split('\n');
+			var metrics = tek271.jsmetrics.calculateMetrics(fileNames);
+			var report = tek271.jsmetrics.report.htmlReport(metrics, true);
+			$('#results').html(report.join('\n'));
+		}
+	</script>
+	<style>
+		table	{
+			border-collapse:collapse;
+		}
+		table,th, td {
+			border: 1px solid black;
+		}
+
+		tr.header, td.lineCounter {
+			font-family: Tahoma;
+			background-color: #FEF7D0;
+			font-size: small;
+		}
+		td.fileName {
+			font-size: small;
+		}
+
+		tr.summary {
+			background-color: #d6fd99;
+		}
+
+	</style>
+</head>
+<body>
+<h1>JS Metrics</h1>
+<div>
+	Unix command to get a list of all js files:
+	<pre>find . -type f -name "*.js" | sed "s#^.#$(pwd)#"</pre>
+</div>
+
+<b>Enter list of file names to process</b>
+<div>
+	<textarea id="fileNames" cols="100" rows="12"></textarea>
+</div>
+<button onclick="calculateMetrics()">Calculate Metrics</button>
+
+<div id="results"></div>
+
+</body>
+</html>

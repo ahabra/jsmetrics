@@ -1,0 +1,5 @@
+.DS_Store
+/.idea
+/target
+/node_modules
+/src/test/ngui
