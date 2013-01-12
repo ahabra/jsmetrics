@@ -10,7 +10,8 @@ namespace('tek271.jsmetrics');
 	function calculateMetrics(fileNames) {
 		var fileInfo, files= [];
 		var lineCount= 0, commentLines=0, emptyLines= 0,
-				functionCount=0, totalFunctionsLines=0, totalFunctionsDepth=0;
+				functionCount=0, totalFunctionsLines=0, totalFunctionsDepth= 0;
+		var blocks= {count:0, totalDepth:0,	averageDepth:0,	maxDepth: 0, depthExceedingThreshold:0};
 
 		for (var i=0, n=fileNames.length; i<n; i++) {
 			var fn= fileNames[i];
@@ -23,7 +24,12 @@ namespace('tek271.jsmetrics');
 			functionCount += fileInfo.functionCount;
 			totalFunctionsLines += fileInfo.totalFunctionsLines;
 			totalFunctionsDepth += fileInfo.totalFunctionsDepth;
+			blocks.count += fileInfo.blocks.count;
+			blocks.totalDepth += fileInfo.blocks.totalDepth;
+			blocks.maxDepth= Math.max(blocks.maxDepth, fileInfo.blocks.maxDepth);
+			blocks.depthExceedingThreshold += fileInfo.blocks.depthExceedingThreshold;
 		}
+		blocks.averageDepth= blocks.count===0? 0 : blocks.totalDepth / blocks.count;
 
 		return {
 			files: files,
@@ -33,7 +39,8 @@ namespace('tek271.jsmetrics');
 				emptyLines: emptyLines,
 				functionCount: functionCount,
 				averageFunctionLength: functionCount===0? 0 : totalFunctionsLines/functionCount,
-				averageFunctionDepth: functionCount===0? 0 : totalFunctionsDepth/functionCount
+				averageFunctionDepth: functionCount===0? 0 : totalFunctionsDepth/functionCount,
+				blocks: blocks
 			}
 		};
 	}

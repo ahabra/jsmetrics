@@ -5,10 +5,14 @@ namespace('tek271.jsmetrics.report');
 (function () {
 	tek271.jsmetrics.report.htmlReport = htmlReport;
 
+	var blockDepthThreshold= tek271.jsmetrics.file.blockDepthThreshold;
+
 	var headers = ['#', 'File Name', 'Code Lines', 'Comment Lines', 'Empty Lines',
-					'Functions', 'Av. Function Length', 'Av. Function Depth'];
+					'Functions', 'Av. Function Length', 'Av. Function Depth',
+					'Blocks', 'Av. Block Depth', 'Max Block Depth', 'Blocks With Depth >' + blockDepthThreshold];
 	var cssClasses = ['lineCounter', 'fileName', 'codeLines', 'commentLines', 'emptyLines',
-					'functions', 'averageFunctionLength', 'averageFunctionDepth'];
+					'functions', 'averageFunctionLength', 'averageFunctionDepth',
+					'blocks', 'averageBlockDepth', 'maxBlockDepth', 'blockDepthExceedingThreshold'];
 
 	function htmlReport(metrics, showDetails) {
 		var ar= [];
@@ -32,7 +36,11 @@ namespace('tek271.jsmetrics.report');
 			file.commentLines, file.emptyLines,
 			file.functionCount,
 			fc===0? 0 : (file.totalFunctionsLines/fc).toFixed(2),
-			fc===0? 0 : (file.totalFunctionsDepth/fc).toFixed(2)
+			fc===0? 0 : (file.totalFunctionsDepth/fc).toFixed(2),
+			file.blocks.count,
+			file.blocks.averageDepth.toFixed(2),
+			file.blocks.maxDepth,
+			file.blocks.depthExceedingThreshold
 		];
 		return createRow(values, 'fileDetails', cssClasses);
 	}
@@ -44,7 +52,11 @@ namespace('tek271.jsmetrics.report');
 			summary.emptyLines,
 			summary.functionCount,
 			summary.averageFunctionLength.toFixed(2),
-			summary.averageFunctionDepth.toFixed(2)
+			summary.averageFunctionDepth.toFixed(2),
+			summary.blocks.count,
+			summary.blocks.averageDepth.toFixed(2),
+			summary.blocks.maxDepth,
+			summary.blocks.depthExceedingThreshold
 		];
 		return createRow(values, 'summary', cssClasses);
 	}

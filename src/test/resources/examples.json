@@ -1,0 +1,206 @@
+// if (true) {true;} else {false;}
+// tree is simplified by removing location info
+{ type:"Program",
+  body: [
+    {
+      type:"IfStatement",
+      "test": { type:"Literal", value:true, raw:"true" },
+      "consequent": {
+        type:"BlockStatement",
+        body: [
+          { type:"ExpressionStatement", expression: { type:"Literal", value: true, raw:"true" }}
+        ],
+      },
+      "alternate": {
+        type:"BlockStatement",
+        body: [
+          { type:"ExpressionStatement", "expression": { type:"Literal", value: false, raw:"false" }}
+        ],
+      },
+    }
+  ]
+}
+
+// if (true) {if(1) {2} else {3} } else {false;}
+{
+  type:"Program",
+  body: [
+    {
+      type:"IfStatement",
+      "test": {type:"Literal", value: true, raw:"true"},
+      "consequent": {
+        type:"BlockStatement",
+        body: [
+          {
+            type:"IfStatement",
+            "test": {type:"Literal", value:1, raw:"1"},
+            "consequent": {
+              type:"BlockStatement",
+              body: [
+                {type:"ExpressionStatement", "expression":{ type:"Literal", value:2, raw:"2" }}
+              ]
+            },
+            "alternate": {
+              type:"BlockStatement",
+              body: [
+                { type:"ExpressionStatement", "expression": {type:"Literal", value:3, raw:"3" }}
+              ]
+            }
+          }
+        ]
+      },
+      "alternate": {
+        type:"BlockStatement",
+        body: [
+          { type:"ExpressionStatement", "expression":{type:"Literal", value:false, raw:"false" }}
+        ]
+      }
+    }
+  ]
+} 
+
+// steal("file", function() {if(1) 2; else 3; });
+  type:"Program",
+  body: [
+    {
+      type:"ExpressionStatement",
+      expression: {
+        type:"CallExpression", "callee": {type:"Identifier", name:"steal"},
+        arguments: [
+          { type:"Literal", value:"file", raw:"\"file\"" },
+          {
+            type:"FunctionExpression",
+            "id": null,
+            "params": [],
+            "defaults": [],
+            body: {
+              type:"BlockStatement",
+              body: [
+                {
+                  type:"IfStatement",
+                  "test": { type:"Literal", value: 1, raw:"1" },
+                  "consequent": {
+                    type:"ExpressionStatement",
+                    "expression": { type:"Literal", value: 2, raw:"2" }
+                  },
+                  "alternate": {
+                    type:"ExpressionStatement",
+                    "expression":{type:"Literal", value:3, raw:"3" }
+                  },
+                }
+              ],
+            },
+            "rest": null,
+            "generator": false,
+            "expression": false,
+          }
+        ],
+      },
+    }
+  ]
+}
+
+// {if(1) {if(2) {function f() {var x=function(){ var i=0;}}}}}
+
+{
+  "type": "Program",
+  body: [
+    {
+      "type": "BlockStatement",
+      body: [
+        {
+          "type": "IfStatement",
+          "test": {
+            "type": "Literal",
+            "value": 1,
+            "raw": "1"            }
+          },
+          "consequent": {
+            "type": "BlockStatement",
+            body: [
+              {
+                "type": "IfStatement",
+                "test": {
+                  "type": "Literal",
+                  "value": 2,
+                  "raw": "2"                  }
+                },
+                "consequent": {
+                  "type": "BlockStatement",
+                  body: [
+                    {
+                      "type": "FunctionDeclaration",
+                      "id": {
+                        "type": "Identifier",
+                        "name": "f" }
+                      },
+                      "params": [],
+                      "defaults": [],
+                      body: {
+                        "type": "BlockStatement",
+                        body: [
+                          {
+                            "type": "VariableDeclaration",
+                            "declarations": [
+                              {
+                                "type": "VariableDeclarator",
+                                "id": {
+                                  "type": "Identifier",
+                                  "name": "x"                                  }
+                                },
+                                "init": {
+                                  "type": "FunctionExpression",
+                                  "id": null,
+                                  "params": [],
+                                  "defaults": [],
+                                  body: {
+                                    "type": "BlockStatement",
+                                    body: [
+                                      {
+                                        "type": "VariableDeclaration",
+                                        "declarations": [
+                                          {
+                                            "type": "VariableDeclarator",
+                                            "id": {
+                                              "type": "Identifier",
+                                              "name": "i"  }
+                                            },
+                                            "init": {
+                                              "type": "Literal",
+                                              "value": 0,
+                                              "raw": "0"}
+                                            }}
+                                          }
+                                        ],
+                                        "kind": "var"                                        }
+                                      }
+                                    ]                                    }
+                                  },
+                                  "rest": null,
+                                  "generator": false,
+                                  "expression": false                                  }
+                                }                                }
+                              }
+                            ],
+                            "kind": "var"                            }
+                          }
+                        ]                        }
+                      },
+                      "rest": null,
+                      "generator": false,
+                      "expression": false                      }
+                    }
+                  ]                  }
+                },
+                "alternate": null                }
+              }
+            ]            }
+          },
+          "alternate": null          }
+        }
+      ]      }
+    }
+  ]  },
+  "comments": [],
+  "errors": []
+} 

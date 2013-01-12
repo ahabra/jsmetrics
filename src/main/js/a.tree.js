@@ -17,18 +17,18 @@ namespace('tek271.jsmetrics.tree');
 		var result = {nodeCount:0, matched:[]};
 
 		_.each(tree, function(v, k) {
-			var cp= path + '/' + k;
+			var currentPath= path + '/' + k;
 			result.nodeCount++;
 			if (hasFilter && filter(k, v)) {
-				result.matched.push(createObject(k, v, tree, cp));
+				result.matched.push(createObject(k, v, tree, currentPath));
 			}
 
 			if (_.isArray(v)) {
 				_.each(v, function(el, index){
-					traverseObject(el, filter, result, cp + '/' + index);
+					traverseObject(el, filter, result, currentPath + '/' + index);
 				});
 			} else if (_.isObject(v)) {
-				traverseObject(v, filter, result, cp);
+				traverseObject(v, filter, result, currentPath);
 			}
 		});
 		return result;

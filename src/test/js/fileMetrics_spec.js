@@ -127,4 +127,89 @@ describe('fileMetrics', function () {
 
 	});
 
+	describe('nesting', function() {
+		var parseText = tek271.jsmetrics.file.parseText;
+
+		it('handles no block', function() {
+			var text= 'var x;';
+
+			var info = parseText(text);
+//			console.log(JSON.stringify(info.ast, null, 2));
+			expect(info.blocks.count).toBe(1);
+			expect(info.blocks.totalDepth).toBe(0);
+			expect(info.blocks.averageDepth).toBe(0);
+			expect(info.blocks.maxDepth).toBe(0);
+			expect(info.blocks.depthExceedingThreshold).toBe(0);
+		});
+
+		it('handles simple block', function() {
+			var text= '{var x;}';
+
+			var info = parseText(text);
+			expect(info.blocks.count).toBe(2);
+			expect(info.blocks.totalDepth).toBe(1);
+			expect(info.blocks.averageDepth).toBe(0.5);
+			expect(info.blocks.maxDepth).toBe(1);
+			expect(info.blocks.depthExceedingThreshold).toBe(0);
+		});
+
+		it('handles nested blocks', function() {
+			var text= '{{var x;}}';
+
+			var info = parseText(text);
+			expect(info.blocks.count).toBe(3);
+			expect(info.blocks.totalDepth).toBe(3);
+			expect(info.blocks.averageDepth).toBe(1);
+			expect(info.blocks.maxDepth).toBe(2);
+			expect(info.blocks.depthExceedingThreshold).toBe(0);
+		});
+
+		it('handles if-statement', function() {
+			var text= '{if (true) {true;} else {false;}}';
+
+			var info = parseText(text);
+			expect(info.blocks.count).toBe(4);
+			expect(info.blocks.totalDepth).toBe(5);
+			expect(info.blocks.averageDepth).toBe(5/4);
+			expect(info.blocks.maxDepth).toBe(2);
+			expect(info.blocks.depthExceedingThreshold).toBe(0);
+		});
+
+		it('handles nested if-statement', function() {
+			var text= 'if (true) {if(1) {2} else {3} } else {false;}';
+
+			var info = parseText(text);
+			expect(info.blocks.count).toBe(5);
+			expect(info.blocks.totalDepth).toBe(6);
+			expect(info.blocks.averageDepth).toBe(6/5);
+			expect(info.blocks.maxDepth).toBe(2);
+			expect(info.blocks.depthExceedingThreshold).toBe(0);
+		});
+
+		it('handles function as an argument', function() {
+			var text= 'steal("file", function() {if(1) 2; else 3; });';
+
+			var info = parseText(text);
+			expect(info.blocks.count).toBe(3);
+			expect(info.blocks.totalDepth).toBe(3);
+			expect(info.blocks.averageDepth).toBe(1);
+			expect(info.blocks.maxDepth).toBe(2);
+			expect(info.blocks.depthExceedingThreshold).toBe(0);
+		});
+
+		it('handles deep nesting', function() {
+			var text= '{if(1) {if(2) {function f() {var x=function(){ var i=0;}}}}}';
+
+			var info = parseText(text);
+			expect(info.blocks.count).toBe(8);
+			expect(info.blocks.totalDepth).toBe(28);
+			expect(info.blocks.averageDepth).toBe(28/8);
+			expect(info.blocks.maxDepth).toBe(7);
+			expect(info.blocks.depthExceedingThreshold).toBe(3);
+		});
+
+	});
+
 });
+
+

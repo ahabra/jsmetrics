@@ -5,9 +5,13 @@ namespace('tek271.jsmetrics.file');
 (function () {
 	tek271.jsmetrics.file.parseText = parseText;
 	tek271.jsmetrics.file.parseFile = parseFile;
+	tek271.jsmetrics.file.blockDepthThreshold = 4;
+
 
 	var traverse = tek271.jsmetrics.tree.traverse;
 	var debug = true;
+	var includeTokenLocation = true;  // this must be true
+	var blockDepthThreshold = tek271.jsmetrics.file.blockDepthThreshold;
 
 	function parseFile(fileName) {
 		console.log('Parsing ' + fileName);
@@ -32,21 +36,51 @@ namespace('tek271.jsmetrics.file');
 	 *     start: line at which the function starts
 	 *     end: line at which the function ends.
 	 *     depth: How deeply nested is the function.
+	 * blocks: an object containing:
+	 * 		count: # of blocks
+	 * 		totalDepth: sum of all blocks depths
+	 * 		averageDepth: average depth of blocks
+	 * 		maxDepth: max depth of any block
+	 * 	 	depthExceedingThreshold: # of blocks with depth exceeding blockDepthThreshold
 	 */
 	function parseText(text) {
 		var ast = getSyntax(text);
 		var commentInfo = extractCommentInfo(ast.comments);
-		var functions = extractFunctions(ast);
+		var interestingNodes = extractInterestingNodes(ast);
 		var lines = countLines(text);
-		var r = calculateFunctionAverages(functions);
+		var r = calculateFunctionAverages(interestingNodes.functions);
 		if (debug) r.ast = ast;
 		r.lineCount = lines.lineCount;
 		r.commentLines = commentInfo.totalLines;
 		r.emptyLines = lines.emptyLines;
-		r.functionCount = functions.length;
-		r.functions = functions;
-
+		r.functionCount = interestingNodes.functions.length;
+		r.functions = interestingNodes.functions;
+		r.blocks = createBlockInfo(interestingNodes.blocks);
 		return r;
+	}
+
+	function createBlockInfo(blocks) {
+		var count = blocks.length;
+		var summary = calcBlockDepthSummary(blocks);
+		var totalDepth= summary.sum;
+		return {
+			count: count,
+			totalDepth: totalDepth,
+			averageDepth: count===0? 0 : totalDepth /count,
+			maxDepth: summary.maxDepth,
+			depthExceedingThreshold: summary.depthExceedingThreshold
+		}
+	}
+
+	function calcBlockDepthSummary(blocks) {
+		var sum=0, maxDepth= 0, depth, depthExceedingThreshold=0;
+		for (var i= 0, n= blocks.length; i<n; i++) {
+			depth = blocks[i].depth;
+			sum += depth;
+			if (depth>maxDepth) maxDepth= depth;
+			if (depth > blockDepthThreshold) depthExceedingThreshold++;
+		}
+		return {sum:sum, maxDepth:maxDepth, depthExceedingThreshold:depthExceedingThreshold};
 	}
 
 	function countLines(text) {
@@ -61,19 +95,44 @@ namespace('tek271.jsmetrics.file');
 		};
 	}
 
-	function extractFunctions(ast) {
+	function extractInterestingNodes(ast) {
 		var result = traverse(ast, filter);
 		var matchedList = result.matched;
-		var ar = [];
+		var functions = [];
+		var blocks = [];
 		for (var i = 0, n = matchedList.length; i < n; i++) {
 			var item = matchedList[i];
-			var itemParent = item.parent;
-			var f = {name:extractName(itemParent), type:item.value,
-				start:itemParent.loc.start.line, end:itemParent.loc.end.line,
-				depth:calculateDepth(item.path)};
-			ar.push(f);
+			if (isFunction(item.name, item.value)) {
+				functions.push( extractFunctionInfo(item) );
+			} else
+			if (isBlock(item.name)) {
+				blocks.push( extractBlockInfo(item) );
+			}
 		}
-		return ar;
+		return {functions:functions, blocks:blocks};
+	}
+
+	function filter(name, value) {
+		return isFunction(name, value) || isBlock(name);
+	}
+
+	function isFunction(name, value) {
+		return name === 'type' && value.indexOf('Function') >= 0;
+	}
+
+	function isBlock(name) {
+		return name === 'body';
+	}
+
+	function extractFunctionInfo(item) {
+		var itemParent = item.parent;
+		return {name:extractName(itemParent), type:item.value,
+			start:itemParent.loc.start.line, end:itemParent.loc.end.line,
+			depth:calculateFunctionDepth(item.path)};
+	}
+
+	function extractBlockInfo(item) {
+		return {depth:calculateBlockDepth(item.path)};
 	}
 
 	function calculateFunctionAverages(functions) {
@@ -91,15 +150,19 @@ namespace('tek271.jsmetrics.file');
 		};
 	}
 
-	function filter(name, value) {
-		return name === 'type' && value.indexOf('Function') >= 0;
-	}
 
-	function calculateDepth(path) {
+	function calculateFunctionDepth(path) {
 		var ar = path.split('/body/');
 		return Math.max(ar.length - 2, 0);
 	}
 
+	function calculateBlockDepth(path) {
+		var ar = path.split('body');
+		return Math.max(ar.length-2, 0);
+	}
+
+
+	// extract node.id.name
 	function extractName(node) {
 		if (_.isUndefined(node) || node === null) return '';
 		node = node.id;
@@ -132,7 +195,7 @@ namespace('tek271.jsmetrics.file');
 
 	function getSyntax(text) {
 		var options = {
-			loc:true,
+			loc:includeTokenLocation,
 			tolerant:true,
 			comment:true
 		};
