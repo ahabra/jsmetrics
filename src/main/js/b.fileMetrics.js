@@ -68,19 +68,28 @@ namespace('tek271.jsmetrics.file');
 			totalDepth: totalDepth,
 			averageDepth: count===0? 0 : totalDepth /count,
 			maxDepth: summary.maxDepth,
-			depthExceedingThreshold: summary.depthExceedingThreshold
+			depthExceedingThreshold: summary.depthExceedingThreshold,
+			linesDepthExceedingThreshold: summary.linesDepthExceedingThreshold
 		}
 	}
 
 	function calcBlockDepthSummary(blocks) {
-		var sum=0, maxDepth= 0, depth, depthExceedingThreshold=0;
+		var sum=0, maxDepth= 0, depth, depthExceedingThreshold= 0, linesDepthExceedingThreshold= 0;
 		for (var i= 0, n= blocks.length; i<n; i++) {
 			depth = blocks[i].depth;
 			sum += depth;
 			if (depth>maxDepth) maxDepth= depth;
-			if (depth > blockDepthThreshold) depthExceedingThreshold++;
+			if (depth > blockDepthThreshold) {
+				depthExceedingThreshold++;
+				linesDepthExceedingThreshold += blocks[i].size;
+			}
 		}
-		return {sum:sum, maxDepth:maxDepth, depthExceedingThreshold:depthExceedingThreshold};
+		return {
+			sum:sum,
+			maxDepth:maxDepth,
+			depthExceedingThreshold:depthExceedingThreshold,
+			linesDepthExceedingThreshold: linesDepthExceedingThreshold
+		};
 	}
 
 	function countLines(text) {
@@ -132,7 +141,15 @@ namespace('tek271.jsmetrics.file');
 	}
 
 	function extractBlockInfo(item) {
-		return {depth:calculateBlockDepth(item.path)};
+		var itemParent = item.parent;
+		var start=itemParent.loc.start.line;
+		var end=itemParent.loc.end.line;
+		return {
+			depth:calculateBlockDepth(item.path),
+			start:start,
+			end:end,
+			size:Math.max(1, end-start)
+		};
 	}
 
 	function calculateFunctionAverages(functions) {

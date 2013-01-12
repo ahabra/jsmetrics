@@ -24,6 +24,7 @@ describe('metricsHtmlReport', function () {
 		expect(r[i++]).toBe('  <td class="averageBlockDepth">Av. Block Depth</td>');
 		expect(r[i++]).toBe('  <td class="maxBlockDepth">Max Block Depth</td>');
 		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">Blocks With Depth >4</td>');
+		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">Lines With Depth >4</td>');
 		expect(r[i++]).toBe(' </tr>');
 		expect(r[i++]).toBe(' <tr class="summary">');
 		expect(r[i++]).toBe('  <td class="lineCounter"></td>');
@@ -38,6 +39,7 @@ describe('metricsHtmlReport', function () {
 		expect(r[i++]).toBe('  <td class="averageBlockDepth">1.00</td>');
 		expect(r[i++]).toBe('  <td class="maxBlockDepth">2</td>');
 		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">0</td>');
+		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">0</td>');
 		expect(r[i++]).toBe(' </tr>');
 		expect(r[i++]).toBe('</table>');
 	});
@@ -62,6 +64,7 @@ describe('metricsHtmlReport', function () {
 		expect(r[i++]).toBe('  <td class="averageBlockDepth">Av. Block Depth</td>');
 		expect(r[i++]).toBe('  <td class="maxBlockDepth">Max Block Depth</td>');
 		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">Blocks With Depth >4</td>');
+		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">Lines With Depth >4</td>');
 		expect(r[i++]).toBe(' </tr>');
 
 		expect(r[i++]).toBe(' <tr class="fileDetails">');
@@ -77,6 +80,7 @@ describe('metricsHtmlReport', function () {
 		expect(r[i++]).toBe('  <td class="averageBlockDepth">1.00</td>');
 		expect(r[i++]).toBe('  <td class="maxBlockDepth">2</td>');
 		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">0</td>');
+		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">0</td>');
 		expect(r[i++]).toBe(' </tr>');
 
 		expect(r[i++]).toBe(' <tr class="summary">');
@@ -92,6 +96,7 @@ describe('metricsHtmlReport', function () {
 		expect(r[i++]).toBe('  <td class="averageBlockDepth">1.00</td>');
 		expect(r[i++]).toBe('  <td class="maxBlockDepth">2</td>');
 		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">0</td>');
+		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">0</td>');
 		expect(r[i++]).toBe(' </tr>');
 		expect(r[i++]).toBe('</table>');
 	});

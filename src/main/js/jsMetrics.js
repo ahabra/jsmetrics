@@ -11,7 +11,8 @@ namespace('tek271.jsmetrics');
 		var fileInfo, files= [];
 		var lineCount= 0, commentLines=0, emptyLines= 0,
 				functionCount=0, totalFunctionsLines=0, totalFunctionsDepth= 0;
-		var blocks= {count:0, totalDepth:0,	averageDepth:0,	maxDepth: 0, depthExceedingThreshold:0};
+		var blocks= {count:0, totalDepth:0,	averageDepth:0,	maxDepth: 0,
+					depthExceedingThreshold:0, linesDepthExceedingThreshold:0};
 
 		for (var i=0, n=fileNames.length; i<n; i++) {
 			var fn= fileNames[i];
@@ -28,6 +29,7 @@ namespace('tek271.jsmetrics');
 			blocks.totalDepth += fileInfo.blocks.totalDepth;
 			blocks.maxDepth= Math.max(blocks.maxDepth, fileInfo.blocks.maxDepth);
 			blocks.depthExceedingThreshold += fileInfo.blocks.depthExceedingThreshold;
+			blocks.linesDepthExceedingThreshold += fileInfo.blocks.linesDepthExceedingThreshold;
 		}
 		blocks.averageDepth= blocks.count===0? 0 : blocks.totalDepth / blocks.count;
 

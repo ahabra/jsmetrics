@@ -46,6 +46,12 @@ describe('jsMetrics', function () {
 			expect(info.summary.functionCount).toBe(1+9);
 			expect(info.summary.averageFunctionLength).toBe(16.4);
 			expect(info.summary.averageFunctionDepth).toBe(1.1);
+
+			expect(info.summary.blocks.count).toBe(25);
+			expect(info.summary.blocks.totalDepth).toBe(91);
+			expect(info.summary.blocks.maxDepth).toBe(7);
+			expect(info.summary.blocks.depthExceedingThreshold).toBe(9);
+			expect(info.summary.blocks.linesDepthExceedingThreshold).toBe(34);
 		});
 	});
 

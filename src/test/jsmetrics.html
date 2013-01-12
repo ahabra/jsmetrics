@@ -40,7 +40,8 @@
 			background-color: #afeeee;
 		}
 
-		tr.header td.blocks, tr.header td.averageBlockDepth, tr.header td.maxBlockDepth, tr.header td.blockDepthExceedingThreshold {
+		tr.header td.blocks, tr.header td.averageBlockDepth, tr.header td.maxBlockDepth,
+		tr.header td.blockDepthExceedingThreshold, tr.header td.linesDepthExceedingThreshold {
 			background-color: #ffe45c;
 		}
 
@@ -48,7 +49,8 @@
 			background-color: #E4F5F7;
 		}
 
-		tr.fileDetails td.blocks, tr.fileDetails td.averageBlockDepth, tr.fileDetails td.maxBlockDepth, tr.fileDetails td.blockDepthExceedingThreshold {
+		tr.fileDetails td.blocks, tr.fileDetails td.averageBlockDepth, tr.fileDetails td.maxBlockDepth,
+		tr.fileDetails td.blockDepthExceedingThreshold, tr.fileDetails td.linesDepthExceedingThreshold {
 			background-color: #FCFBDE;
 		}
 
@@ -72,7 +74,7 @@
 
 <b>Enter list of file names to process</b>
 <div>
-	<textarea id="fileNames" cols="100" rows="12"></textarea>
+	<textarea id="fileNames" cols="120" rows="12"></textarea>
 </div>
 <button onclick="calculateMetrics()">Calculate Metrics</button>
 

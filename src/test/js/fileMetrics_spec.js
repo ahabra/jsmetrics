@@ -206,6 +206,7 @@ describe('fileMetrics', function () {
 			expect(info.blocks.averageDepth).toBe(28/8);
 			expect(info.blocks.maxDepth).toBe(7);
 			expect(info.blocks.depthExceedingThreshold).toBe(3);
+			expect(info.blocks.linesDepthExceedingThreshold).toBe(3);
 		});
 
 	});
