@@ -1,4 +1,4 @@
-/*global console, namespace, tek271, esprima */
+/*global console, namespace, tek271, esprima, tstring */
 
 namespace('tek271.jsmetrics');
 
