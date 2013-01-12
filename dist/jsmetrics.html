@@ -10,6 +10,11 @@
 			var report = tek271.jsmetrics.report.htmlReport(metrics, true);
 			$('#results').html(report.join('\n'));
 		}
+
+		function clearMetrics() {
+			$('#fileNames').val('');
+			$('#results').html('');
+		}
 	</script>
 	<style>
 		table	{
@@ -54,7 +59,7 @@
 		}
 
 		.comment {
-			display:inline-block;
+			/*display:inline-block;*/
 			font-style: italic;
 			font-size: small;
 			color: green;
@@ -68,21 +73,38 @@
 			font-size: smaller;
 		}
 
+		.printed {
+			font-style: normal;
+			font-family: courier;
+			font-size: small;
+			color: #000000;
+		}
+
+		.tips {
+			margin: 20px;
+		}
+
 	</style>
 </head>
 <body>
 <h1>JavaScript Code Metrics</h1>
-<div>
-	<span class="comment">Tip: Unix command to get a list of all js files in a directory:</span>
-	<pre>find . -type f -name "*.js" | sed "s#^.#$(pwd)#"</pre>
+<div class="tips">
+	<b>Tips</b><br>
+	<ul>
+		<li class="comment">Use Firefox or Safari. Chrome's default configuration does not work.</li>
+		<li class="comment">Put the files to analyze in a subdirectory next to this html file</li>
+		<li class="comment">Unix command to get a list of all js files in a directory:
+			<span class="printed">find . -type f -name "*.js" | sed "s#^.#$(pwd)#"</span></li>
+	</ul>
 </div>
 
 <b>Enter list of file names to process</b>
-<span class="comment">Use Firefox or Safari. Chrome's default configuration does not work.</span>
+
 <div>
 	<textarea id="fileNames" cols="120" rows="12"></textarea>
 </div>
 <button onclick="calculateMetrics()">Calculate Metrics</button>
+<button onclick="clearMetrics()">Clear</button>
 <span class="comment">Tip: Open browser console to see progress</span>
 
 <div id="results"></div>
