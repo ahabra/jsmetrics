@@ -57,15 +57,23 @@
 			display:inline-block;
 			font-style: italic;
 			font-size: small;
-			color: #006400;
+			color: green;
+		}
+
+		.footer {
+			margin-top: 20px;
+			padding: 10px;
+			background-color: #f8ebbf;
+			font-family: helveticaneue-light;
+			font-size: smaller;
 		}
 
 	</style>
 </head>
 <body>
-<h1>JS Metrics</h1>
+<h1>JavaScript Code Metrics</h1>
 <div>
-	Unix command to get a list of all js files:
+	<span class="comment">Tip: Unix command to get a list of all js files in a directory:</span>
 	<pre>find . -type f -name "*.js" | sed "s#^.#$(pwd)#"</pre>
 </div>
 
@@ -75,8 +83,10 @@
 	<textarea id="fileNames" cols="120" rows="12"></textarea>
 </div>
 <button onclick="calculateMetrics()">Calculate Metrics</button>
+<span class="comment">Tip: Open browser console to see progress</span>
 
 <div id="results"></div>
 
+<div class="footer"><a href="https://github.com/ahabra/jsmetrics">JavaScript Code Metrics</a> &#169; by Abdul Habra 2013.01</div>
 </body>
 </html>

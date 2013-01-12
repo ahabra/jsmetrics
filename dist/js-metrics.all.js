@@ -4813,6 +4813,7 @@ namespace('tek271.jsmetrics.file');
 			},
 			error:function (jqXHR, textStatus, errorThrown) {
 				console.log('Error:', textStatus, errorThrown);
+				text= '';
 			}
 		});
 		return text;
