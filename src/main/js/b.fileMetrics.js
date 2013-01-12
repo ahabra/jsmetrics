@@ -11,7 +11,11 @@ namespace('tek271.jsmetrics.file');
 	var traverse = tek271.jsmetrics.tree.traverse;
 	var debug = true;
 	var includeTokenLocation = true;  // this must be true
+
 	var blockDepthThreshold = tek271.jsmetrics.file.blockDepthThreshold;
+	var createRangeFromObject= tek271.jsmetrics.range.createRangeFromObject;
+	var joinRanges = tek271.jsmetrics.range.joinRanges;
+	var sumRangesSize = tek271.jsmetrics.range.sumRangesSize;
 
 	function parseFile(fileName) {
 		console.log('Parsing ' + fileName);
@@ -41,7 +45,8 @@ namespace('tek271.jsmetrics.file');
 	 *     totalDepth: sum of all blocks depths
 	 *     averageDepth: average depth of blocks
 	 *     maxDepth: max depth of any block
-	 *      depthExceedingThreshold: # of blocks with depth exceeding blockDepthThreshold
+	 *     depthExceedingThreshold: # of blocks with depth exceeding blockDepthThreshold
+	 *     linesDepthExceedingThreshold: # of lines with depth exceeding blockDepthThreshold. This will avoid line duplicate
 	 */
 	function parseText(text) {
 		var ast = getSyntax(text);
@@ -74,14 +79,14 @@ namespace('tek271.jsmetrics.file');
 	}
 
 	function calcBlockDepthSummary(blocks) {
-		var sum = 0, maxDepth = 0, depth, depthExceedingThreshold = 0, linesDepthExceedingThreshold = 0;
+		var linesDepthExceedingThreshold = calcLinesDepthExceedingThreshold(blocks);
+		var sum = 0, maxDepth = 0, depth, depthExceedingThreshold = 0;
 		for (var i = 0, n = blocks.length; i < n; i++) {
 			depth = blocks[i].depth;
 			sum += depth;
 			if (depth > maxDepth) maxDepth = depth;
 			if (depth > blockDepthThreshold) {
 				depthExceedingThreshold++;
-				linesDepthExceedingThreshold += blocks[i].size;
 			}
 		}
 		return {
@@ -90,6 +95,18 @@ namespace('tek271.jsmetrics.file');
 			depthExceedingThreshold:depthExceedingThreshold,
 			linesDepthExceedingThreshold:linesDepthExceedingThreshold
 		};
+	}
+
+	function calcLinesDepthExceedingThreshold(blocks) {
+		var ranges= [];
+		for (var i = 0, n = blocks.length; i < n; i++) {
+			var block= blocks[i];
+			if (block.depth > blockDepthThreshold) {
+				ranges.push( createRangeFromObject(block) );
+			}
+		}
+		ranges = joinRanges(ranges);
+		return sumRangesSize(ranges);
 	}
 
 	function countLines(text) {

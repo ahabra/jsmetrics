@@ -51,7 +51,7 @@ describe('jsMetrics', function () {
 			expect(info.summary.blocks.totalDepth).toBe(91);
 			expect(info.summary.blocks.maxDepth).toBe(7);
 			expect(info.summary.blocks.depthExceedingThreshold).toBe(9);
-			expect(info.summary.blocks.linesDepthExceedingThreshold).toBe(34);
+			expect(info.summary.blocks.linesDepthExceedingThreshold).toBe(25);
 		});
 	});
 

@@ -206,6 +206,15 @@ describe('fileMetrics', function () {
 			expect(info.blocks.averageDepth).toBe(28/8);
 			expect(info.blocks.maxDepth).toBe(7);
 			expect(info.blocks.depthExceedingThreshold).toBe(3);
+			expect(info.blocks.linesDepthExceedingThreshold).toBe(1);
+		});
+
+		it('linesDepthExceedingThreshold will not count duplicate lines if sub-blocks', function() {
+			var ar= [];
+			ar.push('var x=1;', '{{{{', '{var a=0;', '{var b=1;}', '}', '}}}}');
+			var text = ar.join('\n');
+			var info = parseText(text);
+			expect(info.blocks.maxDepth).toBe(6);
 			expect(info.blocks.linesDepthExceedingThreshold).toBe(3);
 		});
 
