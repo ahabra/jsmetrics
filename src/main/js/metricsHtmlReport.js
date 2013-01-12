@@ -7,10 +7,11 @@ namespace('tek271.jsmetrics.report');
 
 	var threshold= tek271.jsmetrics.file.blockDepthThreshold;
 
+	var ignoreEmpty = '<span class="comment">(ignore empty lines)</span>';
 	var headers = ['#', 'File Name', 'Code Lines', 'Comment Lines', 'Empty Lines',
-					'Functions', 'Av. Function Length', 'Av. Function Depth',
+					'Functions', 'Av. Function Length'+ignoreEmpty, 'Av. Function Depth',
 					'Blocks', 'Av. Block Depth', 'Max Block Depth',
-					'Blocks With Depth >' + threshold, 'Lines With Depth >' + threshold];
+					'Blocks With Depth >' + threshold, 'Lines With Depth >' + threshold + ignoreEmpty];
 	var cssClasses = ['lineCounter', 'fileName', 'codeLines', 'commentLines', 'emptyLines',
 					'functions', 'averageFunctionLength', 'averageFunctionDepth',
 					'blocks', 'averageBlockDepth', 'maxBlockDepth',

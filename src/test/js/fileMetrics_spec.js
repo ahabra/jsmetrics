@@ -117,11 +117,11 @@ describe('fileMetrics', function () {
 			expect(info.lineCount).toBe(83);
 			expect(info.commentLines).toBe(7);
 			expect(info.functionCount).toBe(9);
-			expect(info.functions[0]).toEqual({name:'', type:'FunctionExpression', start:4, end:83, depth:0});
+			expect(info.functions[0]).toEqual({name:'', type:'FunctionExpression', start:3, end:70, depth:0});
 
-			expect(info.totalFunctionsLines).toBe(161);
+			expect(info.totalFunctionsLines).toBe(145);
 			expect(info.totalFunctionsDepth).toBe(11);
-			expect(info.averageFunctionLength).toBe(161/9);
+			expect(info.averageFunctionLength).toBe(145/9);
 			expect(info.averageFunctionDepth).toBe(11/9);
 		});
 
@@ -205,16 +205,16 @@ describe('fileMetrics', function () {
 			expect(info.blocks.totalDepth).toBe(28);
 			expect(info.blocks.averageDepth).toBe(28/8);
 			expect(info.blocks.maxDepth).toBe(7);
-			expect(info.blocks.depthExceedingThreshold).toBe(3);
+			expect(info.blocks.depthExceedingThreshold).toBe(1);
 			expect(info.blocks.linesDepthExceedingThreshold).toBe(1);
 		});
 
 		it('linesDepthExceedingThreshold will not count duplicate lines if sub-blocks', function() {
 			var ar= [];
-			ar.push('var x=1;', '{{{{', '{var a=0;', '{var b=1;}', '}', '}}}}');
+			ar.push('var x=1;', '{{{{{{', '{var a=0;', '{var b=1;}', '}', '}}}}}}');
 			var text = ar.join('\n');
 			var info = parseText(text);
-			expect(info.blocks.maxDepth).toBe(6);
+			expect(info.blocks.maxDepth).toBe(8);
 			expect(info.blocks.linesDepthExceedingThreshold).toBe(3);
 		});
 

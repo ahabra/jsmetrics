@@ -44,14 +44,14 @@ describe('jsMetrics', function () {
 			expect(info.summary.lineCount).toBe(3+83);
 			expect(info.summary.commentLines).toBe(0+7);
 			expect(info.summary.functionCount).toBe(1+9);
-			expect(info.summary.averageFunctionLength).toBe(16.4);
+			expect(info.summary.averageFunctionLength).toBe(14.8);
 			expect(info.summary.averageFunctionDepth).toBe(1.1);
 
 			expect(info.summary.blocks.count).toBe(25);
 			expect(info.summary.blocks.totalDepth).toBe(91);
 			expect(info.summary.blocks.maxDepth).toBe(7);
-			expect(info.summary.blocks.depthExceedingThreshold).toBe(9);
-			expect(info.summary.blocks.linesDepthExceedingThreshold).toBe(25);
+			expect(info.summary.blocks.depthExceedingThreshold).toBe(1);
+			expect(info.summary.blocks.linesDepthExceedingThreshold).toBe(3);
 		});
 	});
 

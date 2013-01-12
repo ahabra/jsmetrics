@@ -5,7 +5,7 @@ namespace('tek271.jsmetrics.file');
 (function () {
 	tek271.jsmetrics.file.parseText = parseText;
 	tek271.jsmetrics.file.parseFile = parseFile;
-	tek271.jsmetrics.file.blockDepthThreshold = 4;
+	tek271.jsmetrics.file.blockDepthThreshold = 6;
 
 
 	var traverse = tek271.jsmetrics.tree.traverse;
@@ -13,7 +13,7 @@ namespace('tek271.jsmetrics.file');
 	var includeTokenLocation = true;  // this must be true
 
 	var blockDepthThreshold = tek271.jsmetrics.file.blockDepthThreshold;
-	var createRangeFromObject= tek271.jsmetrics.range.createRangeFromObject;
+	var createRangeFromObject = tek271.jsmetrics.range.createRangeFromObject;
 	var joinRanges = tek271.jsmetrics.range.joinRanges;
 	var sumRangesSize = tek271.jsmetrics.range.sumRangesSize;
 
@@ -29,15 +29,16 @@ namespace('tek271.jsmetrics.file');
 	 * Parse the given javaScript text and return an object with these attributes:
 	 * lineCount: # of lines in the text
 	 * commentLines: # of comment lines
+	 * emptyLines: # of empty lines
 	 * functionCount: # of functions
-	 * totalFunctionsLines: sum of lengths of all functions, usually > lineCount
+	 * totalFunctionsLines: sum of lengths of all functions, usually > lineCount, not counting empty lines
 	 * totalFunctionsDepth: sum of depths of all functions
-	 * averageFunctionLength: average # of lines per function
+	 * averageFunctionLength: average # of lines per function, not counting empty lines
 	 * averageFunctionDepth: average depth per function. Depth here means how deeply nested is the function.
 	 * functions: Array of objects, each describe a function in the text. The object has the following members:
 	 *     name: name of the function. Empty string for anonymous functions.
 	 *     type: FunctionDeclaration or FunctionExpression
-	 *     start: line at which the function starts
+	 *     start: line at which the function starts, not counting empty lines
 	 *     end: line at which the function ends.
 	 *     depth: How deeply nested is the function.
 	 * blocks: an object containing:
@@ -46,13 +47,14 @@ namespace('tek271.jsmetrics.file');
 	 *     averageDepth: average depth of blocks
 	 *     maxDepth: max depth of any block
 	 *     depthExceedingThreshold: # of blocks with depth exceeding blockDepthThreshold
-	 *     linesDepthExceedingThreshold: # of lines with depth exceeding blockDepthThreshold. This will avoid line duplicate
+	 *     linesDepthExceedingThreshold: # of lines with depth exceeding blockDepthThreshold.
+	 *         This will avoid line duplicate, not counting empty lines
 	 */
 	function parseText(text) {
-		var ast = getSyntax(text);
+		var lines = countAndFilterLines(text);
+		var ast = getSyntax(lines.textWithNoEmptyLines);
 		var commentInfo = extractCommentInfo(ast.comments);
 		var interestingNodes = extractInterestingNodes(ast);
-		var lines = countLines(text);
 		var r = calculateFunctionAverages(interestingNodes.functions);
 		if (debug) r.ast = ast;
 		r.lineCount = lines.lineCount;
@@ -98,26 +100,33 @@ namespace('tek271.jsmetrics.file');
 	}
 
 	function calcLinesDepthExceedingThreshold(blocks) {
-		var ranges= [];
+		var ranges = [];
 		for (var i = 0, n = blocks.length; i < n; i++) {
-			var block= blocks[i];
+			var block = blocks[i];
 			if (block.depth > blockDepthThreshold) {
-				ranges.push( createRangeFromObject(block) );
+				ranges.push(createRangeFromObject(block));
 			}
 		}
 		ranges = joinRanges(ranges);
 		return sumRangesSize(ranges);
 	}
 
-	function countLines(text) {
+	function countAndFilterLines(text) {
 		var lines = text.split('\n');
 		var emptyLines = 0, lineCount = lines.length;
+		var noneEmptyLines = [];
 		for (var i = 0; i < lineCount; i++) {
-			if (tstring(lines[i], true).isBlank()) emptyLines++;
+			var line = lines[i];
+			if (tstring(line, true).isBlank()) {
+				emptyLines++;
+			} else {
+				noneEmptyLines.push(line);
+			}
 		}
 		return {
 			emptyLines:emptyLines,
-			lineCount:lineCount
+			lineCount:lineCount,
+			textWithNoEmptyLines:noneEmptyLines.join('\n')
 		};
 	}
 

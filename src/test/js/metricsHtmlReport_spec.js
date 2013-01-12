@@ -3,6 +3,8 @@
 describe('metricsHtmlReport', function () {
 	var htmlReport= tek271.jsmetrics.report.htmlReport;
 	var calculateMetrics = tek271.jsmetrics.calculateMetrics;
+	var threshold = tek271.jsmetrics.file.blockDepthThreshold;
+	var ignoreEmpty = '<span class="comment">(ignore empty lines)</span>';
 
 	it('builds a table w.o. details', function() {
 		var fileName= '/src/test/resources/f1.js';
@@ -18,13 +20,13 @@ describe('metricsHtmlReport', function () {
 		expect(r[i++]).toBe('  <td class="commentLines">Comment Lines</td>');
 		expect(r[i++]).toBe('  <td class="emptyLines">Empty Lines</td>');
 		expect(r[i++]).toBe('  <td class="functions">Functions</td>');
-		expect(r[i++]).toBe('  <td class="averageFunctionLength">Av. Function Length</td>');
+		expect(r[i++]).toBe('  <td class="averageFunctionLength">Av. Function Length' + ignoreEmpty + '</td>');
 		expect(r[i++]).toBe('  <td class="averageFunctionDepth">Av. Function Depth</td>');
 		expect(r[i++]).toBe('  <td class="blocks">Blocks</td>');
 		expect(r[i++]).toBe('  <td class="averageBlockDepth">Av. Block Depth</td>');
 		expect(r[i++]).toBe('  <td class="maxBlockDepth">Max Block Depth</td>');
-		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">Blocks With Depth >4</td>');
-		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">Lines With Depth >4</td>');
+		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">Blocks With Depth >' + threshold + '</td>');
+		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">Lines With Depth >' + threshold + ignoreEmpty + '</td>');
 		expect(r[i++]).toBe(' </tr>');
 		expect(r[i++]).toBe(' <tr class="summary">');
 		expect(r[i++]).toBe('  <td class="lineCounter"></td>');
@@ -58,13 +60,13 @@ describe('metricsHtmlReport', function () {
 		expect(r[i++]).toBe('  <td class="commentLines">Comment Lines</td>');
 		expect(r[i++]).toBe('  <td class="emptyLines">Empty Lines</td>');
 		expect(r[i++]).toBe('  <td class="functions">Functions</td>');
-		expect(r[i++]).toBe('  <td class="averageFunctionLength">Av. Function Length</td>');
+		expect(r[i++]).toBe('  <td class="averageFunctionLength">Av. Function Length' + ignoreEmpty + '</td>');
 		expect(r[i++]).toBe('  <td class="averageFunctionDepth">Av. Function Depth</td>');
 		expect(r[i++]).toBe('  <td class="blocks">Blocks</td>');
 		expect(r[i++]).toBe('  <td class="averageBlockDepth">Av. Block Depth</td>');
 		expect(r[i++]).toBe('  <td class="maxBlockDepth">Max Block Depth</td>');
-		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">Blocks With Depth >4</td>');
-		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">Lines With Depth >4</td>');
+		expect(r[i++]).toBe('  <td class="blockDepthExceedingThreshold">Blocks With Depth >' + threshold + '</td>');
+		expect(r[i++]).toBe('  <td class="linesDepthExceedingThreshold">Lines With Depth >' + threshold + ignoreEmpty + '</td>');
 		expect(r[i++]).toBe(' </tr>');
 
 		expect(r[i++]).toBe(' <tr class="fileDetails">');
