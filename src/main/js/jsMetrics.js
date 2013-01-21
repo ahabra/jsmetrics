@@ -7,7 +7,7 @@ namespace('tek271.jsmetrics');
 
 	var parseFile= tek271.jsmetrics.file.parseFile;
 
-	function calculateMetrics(fileNames) {
+	function calculateMetrics(fileNames, blockDepthThreshold) {
 		var fileInfo, files= [];
 		var lineCount= 0, commentLines=0, emptyLines= 0,
 				functionCount=0, totalFunctionsLines=0, totalFunctionsDepth= 0;
@@ -17,7 +17,7 @@ namespace('tek271.jsmetrics');
 		for (var i=0, n=fileNames.length; i<n; i++) {
 			var fn= fileNames[i];
 			if (tstring(fn,true).trim().isEmpty()) continue;
-			fileInfo = parseFile(fn);
+			fileInfo = parseFile(fn, blockDepthThreshold);
 			files.push(fileInfo);
 			lineCount += fileInfo.lineCount;
 			commentLines += fileInfo.commentLines;

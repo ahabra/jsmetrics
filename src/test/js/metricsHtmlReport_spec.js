@@ -3,14 +3,14 @@
 describe('metricsHtmlReport', function () {
 	var htmlReport= tek271.jsmetrics.report.htmlReport;
 	var calculateMetrics = tek271.jsmetrics.calculateMetrics;
-	var threshold = tek271.jsmetrics.file.blockDepthThreshold;
+	var threshold = 6;
 	var ignoreEmpty = '<span class="comment">(ignore empty lines)</span>';
 
 	it('builds a table w.o. details', function() {
 		var fileName= '/src/test/resources/f1.js';
 		var info = calculateMetrics([fileName]);
 
-		var r= htmlReport(info);
+		var r= htmlReport(info, false, threshold);
 		var i=0;
 		expect(r[i++]).toBe('<table class="jsmetrics">');
 		expect(r[i++]).toBe(' <tr class="header">');
@@ -50,7 +50,7 @@ describe('metricsHtmlReport', function () {
 		var fileName= '/src/test/resources/f1.js';
 		var info = calculateMetrics([fileName]);
 
-		var r= htmlReport(info, true);
+		var r= htmlReport(info, true, threshold);
 		var i=0;
 		expect(r[i++]).toBe('<table class="jsmetrics">');
 		expect(r[i++]).toBe(' <tr class="header">');

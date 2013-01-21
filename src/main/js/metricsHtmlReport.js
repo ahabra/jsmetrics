@@ -5,19 +5,20 @@ namespace('tek271.jsmetrics.report');
 (function () {
 	tek271.jsmetrics.report.htmlReport = htmlReport;
 
-	var threshold= tek271.jsmetrics.file.blockDepthThreshold;
-
 	var ignoreEmpty = '<span class="comment">(ignore empty lines)</span>';
 	var headers = ['#', 'File Name', 'Code Lines', 'Comment Lines', 'Empty Lines',
 					'Functions', 'Av. Function Length'+ignoreEmpty, 'Av. Function Depth',
 					'Blocks', 'Av. Block Depth', 'Max Block Depth',
-					'Blocks With Depth >' + threshold, 'Lines With Depth >' + threshold + ignoreEmpty];
+					'Blocks With Depth >', 'Lines With Depth >'];
 	var cssClasses = ['lineCounter', 'fileName', 'codeLines', 'commentLines', 'emptyLines',
 					'functions', 'averageFunctionLength', 'averageFunctionDepth',
 					'blocks', 'averageBlockDepth', 'maxBlockDepth',
 					'blockDepthExceedingThreshold', 'linesDepthExceedingThreshold'];
 
-	function htmlReport(metrics, showDetails) {
+	function htmlReport(metrics, showDetails, blockDepthThreshold) {
+		headers[11] = 'Blocks With Depth >' + blockDepthThreshold;
+		headers[12] = 'Lines With Depth >' + blockDepthThreshold + ignoreEmpty;
+
 		var ar= [];
 		ar.push(tagStart('table', 'jsmetrics'));
 		ar= ar.concat( createRow(headers, 'header', cssClasses) );

@@ -5,15 +5,18 @@
 	<script type="text/javascript" src="js-metrics.all.js"></script>
 	<script>
 		function calculateMetrics() {
+			$('#results').html('');
+			var blockDepthThreshold= parseInt($('#blockDepthThreshold').val(), 10);
 			var fileNames= $('#fileNames').val().split('\n');
-			var metrics = tek271.jsmetrics.calculateMetrics(fileNames);
-			var report = tek271.jsmetrics.report.htmlReport(metrics, true);
+			var metrics = tek271.jsmetrics.calculateMetrics(fileNames, blockDepthThreshold);
+			var report = tek271.jsmetrics.report.htmlReport(metrics, true, blockDepthThreshold);
 			$('#results').html(report.join('\n'));
 		}
 
 		function clearMetrics() {
 			$('#fileNames').val('');
 			$('#results').html('');
+			$('#fileNames').val('6');
 		}
 	</script>
 	<style>
@@ -102,6 +105,9 @@
 
 <div>
 	<textarea id="fileNames" cols="120" rows="12"></textarea>
+</div>
+<div>
+	Depth Threshold <input type="text" id="blockDepthThreshold" value="6" size="3">
 </div>
 <button onclick="calculateMetrics()">Calculate Metrics</button>
 <button onclick="clearMetrics()">Clear</button>

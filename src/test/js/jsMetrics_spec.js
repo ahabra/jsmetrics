@@ -7,7 +7,7 @@ describe('jsMetrics', function () {
 
 		it('handles a single file', function() {
 			var fileName= '/src/test/resources/f1.js';
-			var info = calculateMetrics([fileName]);
+			var info = calculateMetrics([fileName], 6);
 			expect(info.summary).toBeDefined();
 
 			expect(info.files.length).toBe(1);
@@ -24,7 +24,7 @@ describe('jsMetrics', function () {
 		it('handles multiple files', function() {
 			var fn0= '/src/test/resources/f1.js';
 			var fn1= '/src/test/resources/fullbook_app.js';
-			var info = calculateMetrics([fn0, fn1]);
+			var info = calculateMetrics([fn0, fn1], 6);
 
 			expect(info.files.length).toBe(2);
 			var fi0 = info.files[0];

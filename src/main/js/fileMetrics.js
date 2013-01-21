@@ -5,22 +5,20 @@ namespace('tek271.jsmetrics.file');
 (function () {
 	tek271.jsmetrics.file.parseText = parseText;
 	tek271.jsmetrics.file.parseFile = parseFile;
-	tek271.jsmetrics.file.blockDepthThreshold = 6;
-
 
 	var traverse = tek271.jsmetrics.tree.traverse;
 	var debug = true;
 	var includeTokenLocation = true;  // this must be true
 
-	var blockDepthThreshold = tek271.jsmetrics.file.blockDepthThreshold;
+	var blockDepthThreshold = 6;
 	var createRangeFromObject = tek271.jsmetrics.range.createRangeFromObject;
 	var joinRanges = tek271.jsmetrics.range.joinRanges;
 	var sumRangesSize = tek271.jsmetrics.range.sumRangesSize;
 
-	function parseFile(fileName) {
+	function parseFile(fileName, depthThreshold) {
 		console.log('Parsing ' + fileName);
 		var text = readFile(fileName);
-		var r = parseText(text);
+		var r = parseText(text, depthThreshold);
 		r.fileName = fileName;
 		return r;
 	}
@@ -50,7 +48,8 @@ namespace('tek271.jsmetrics.file');
 	 *     linesDepthExceedingThreshold: # of lines with depth exceeding blockDepthThreshold.
 	 *         This will avoid line duplicate, not counting empty lines
 	 */
-	function parseText(text) {
+	function parseText(text, depthThreshold) {
+		blockDepthThreshold = depthThreshold;
 		var lines = countAndFilterLines(text);
 		var ast = getSyntax(lines.textWithNoEmptyLines);
 		var commentInfo = extractCommentInfo(ast.comments);

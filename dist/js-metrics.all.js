@@ -4563,22 +4563,20 @@ namespace('tek271.jsmetrics.file');
 (function () {
 	tek271.jsmetrics.file.parseText = parseText;
 	tek271.jsmetrics.file.parseFile = parseFile;
-	tek271.jsmetrics.file.blockDepthThreshold = 6;
-
 
 	var traverse = tek271.jsmetrics.tree.traverse;
 	var debug = true;
 	var includeTokenLocation = true;  // this must be true
 
-	var blockDepthThreshold = tek271.jsmetrics.file.blockDepthThreshold;
+	var blockDepthThreshold = 6;
 	var createRangeFromObject = tek271.jsmetrics.range.createRangeFromObject;
 	var joinRanges = tek271.jsmetrics.range.joinRanges;
 	var sumRangesSize = tek271.jsmetrics.range.sumRangesSize;
 
-	function parseFile(fileName) {
+	function parseFile(fileName, depthThreshold) {
 		console.log('Parsing ' + fileName);
 		var text = readFile(fileName);
-		var r = parseText(text);
+		var r = parseText(text, depthThreshold);
 		r.fileName = fileName;
 		return r;
 	}
@@ -4608,7 +4606,8 @@ namespace('tek271.jsmetrics.file');
 	 *     linesDepthExceedingThreshold: # of lines with depth exceeding blockDepthThreshold.
 	 *         This will avoid line duplicate, not counting empty lines
 	 */
-	function parseText(text) {
+	function parseText(text, depthThreshold) {
+		blockDepthThreshold = depthThreshold;
 		var lines = countAndFilterLines(text);
 		var ast = getSyntax(lines.textWithNoEmptyLines);
 		var commentInfo = extractCommentInfo(ast.comments);
@@ -4830,7 +4829,7 @@ namespace('tek271.jsmetrics');
 
 	var parseFile= tek271.jsmetrics.file.parseFile;
 
-	function calculateMetrics(fileNames) {
+	function calculateMetrics(fileNames, blockDepthThreshold) {
 		var fileInfo, files= [];
 		var lineCount= 0, commentLines=0, emptyLines= 0,
 				functionCount=0, totalFunctionsLines=0, totalFunctionsDepth= 0;
@@ -4840,7 +4839,7 @@ namespace('tek271.jsmetrics');
 		for (var i=0, n=fileNames.length; i<n; i++) {
 			var fn= fileNames[i];
 			if (tstring(fn,true).trim().isEmpty()) continue;
-			fileInfo = parseFile(fn);
+			fileInfo = parseFile(fn, blockDepthThreshold);
 			files.push(fileInfo);
 			lineCount += fileInfo.lineCount;
 			commentLines += fileInfo.commentLines;
@@ -4879,19 +4878,20 @@ namespace('tek271.jsmetrics.report');
 (function () {
 	tek271.jsmetrics.report.htmlReport = htmlReport;
 
-	var threshold= tek271.jsmetrics.file.blockDepthThreshold;
-
 	var ignoreEmpty = '<span class="comment">(ignore empty lines)</span>';
 	var headers = ['#', 'File Name', 'Code Lines', 'Comment Lines', 'Empty Lines',
 					'Functions', 'Av. Function Length'+ignoreEmpty, 'Av. Function Depth',
 					'Blocks', 'Av. Block Depth', 'Max Block Depth',
-					'Blocks With Depth >' + threshold, 'Lines With Depth >' + threshold + ignoreEmpty];
+					'Blocks With Depth >', 'Lines With Depth >'];
 	var cssClasses = ['lineCounter', 'fileName', 'codeLines', 'commentLines', 'emptyLines',
 					'functions', 'averageFunctionLength', 'averageFunctionDepth',
 					'blocks', 'averageBlockDepth', 'maxBlockDepth',
 					'blockDepthExceedingThreshold', 'linesDepthExceedingThreshold'];
 
-	function htmlReport(metrics, showDetails) {
+	function htmlReport(metrics, showDetails, blockDepthThreshold) {
+		headers[11] = 'Blocks With Depth >' + blockDepthThreshold;
+		headers[12] = 'Lines With Depth >' + blockDepthThreshold + ignoreEmpty;
+
 		var ar= [];
 		ar.push(tagStart('table', 'jsmetrics'));
 		ar= ar.concat( createRow(headers, 'header', cssClasses) );
