@@ -97,7 +97,7 @@
 		<li class="comment">Use Firefox or Safari. Chrome's default configuration does not work.</li>
 		<li class="comment">Put the files to analyze in a subdirectory next to this html file</li>
 		<li class="comment">Unix command to get a list of all js files in a directory:
-			<span class="printed">find . -type f -name "*.js" | sed "s#^.#$(pwd)#"</span></li>
+			<span class="printed">find "$PWD" -type f -name "*.js"</span></li>
 	</ul>
 </div>
 
